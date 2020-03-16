@@ -1,17 +1,13 @@
 import Fluent
 import Vapor
+import SendGridKit
 
-func routes(_ app: Application) throws {
-    app.get { req in
+func routes(_ app: Application, sendGridClient: SendGridClient) throws {
+    app.get { req -> String in
         return "It works!"
     }
-
-    app.get("hello") { req -> String in
-        return "Hello, world!"
-    }
-
-    let todoController = TodoController()
-    app.get("todos", use: todoController.index)
-    app.post("todos", use: todoController.create)
-    app.delete("todos", ":todoID", use: todoController.delete)
+    
+    let controller = AuthController(sendGridClient: sendGridClient)
+    app.post("register", use: controller.register)
+    app.get("confirm", use: controller.confirm)
 }
